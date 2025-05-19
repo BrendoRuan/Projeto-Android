@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#E3F2FD"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginBottom="24dp"
+            android:text="Cadastro de Usuário"
+            android:textColor="#1976D2"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Nome"
+            android:backgroundTint="#2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/editCPF"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="CPF"
+            android:backgroundTint="#2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/editPhone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Telefone"
+            android:backgroundTint="#2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="E-mail"
+            android:inputType="textEmailAddress"
+            android:backgroundTint="#2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Senha"
+            android:inputType="textPassword"
+            android:backgroundTint="#2196F3"
+            android:layout_marginBottom="24dp" />
+        <!-- Campo Confirmação de Senha -->
+        <EditText
+            android:id="@+id/editConfirmPassword"
+            android:layout_width="363dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:hint="Confirme a Senha"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editPassword" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cadastrar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1976D2" />
+    </LinearLayout>
+</ScrollView>
