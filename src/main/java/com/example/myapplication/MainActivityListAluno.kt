@@ -21,24 +21,24 @@ class MainActivityListAluno : AppCompatActivity() {
 
         // Ação do botão "Voltar": volta para a tela MainListar
         btnVoltar.setOnClickListener {
-            val intent = Intent(this, MainListar::class.java)
+            val intent = Intent(this, MainHome::class.java)
             startActivity(intent)
         }
 
         // Lista de exemplo que será exibida na ListView
         val arrayList = arrayOf(
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao"
+            "Brendo",
+            "Ruan",
+            "Oliver",
+            "Viviane",
+            "Marcos",
+            "Darlan",
+            "Levy",
+            "Carlos",
+            "Douglas",
+            "Hebert",
+            "Hugo",
+            "Vitor"
         )
 
         // Adaptador para exibir a lista

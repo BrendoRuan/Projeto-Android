@@ -15,22 +15,13 @@
         android:inputType="number"
         android:layout_marginBottom="8dp" />
 
-    <!-- Campo de Nome -->
-    <EditText
-        android:id="@+id/editTextNome"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="Aluno"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
     <!-- Campo de Disciplina -->
     <EditText
         android:id="@+id/editTextDisciplina"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Disciplina"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         android:layout_marginBottom="8dp" />
 
     <!-- Botões -->

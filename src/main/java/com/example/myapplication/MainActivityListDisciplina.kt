@@ -24,24 +24,19 @@ class MainActivityListDisciplina : AppCompatActivity() {
         // Ação para o botão "Voltar"
         btnVoltar.setOnClickListener {
             // Cria uma Intent para abrir a tela de listagem principal
-            val intent = Intent(this, MainListar::class.java)
+            val intent = Intent(this, MainHome::class.java)
             startActivity(intent)
         }
 
         // Lista de exemplo com valores fixos para exibição no ListView
         val arrayList = arrayOf(
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao",
-            "android",
-            "limao"
+            "Android",
+            "Front-End",
+            "Back-End",
+            "Banco De Dados",
+            "Arquitetura e Estrutura de Dados",
+            "Redes",
+            "I.A"
         )
 
         // Adapter que conecta a lista de dados com o ListView
