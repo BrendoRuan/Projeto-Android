@@ -74,4 +74,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = readableDatabase // Obtém o banco em modo leitura
         return db.rawQuery("SELECT * FROM $TABLE_NAME", null) // Retorna todos os registros
     }
+
+    // Este método retorna todos os registros com foco na coluna 'disciplina'
+    fun getAllDisciplinas(): Cursor {
+        val db = readableDatabase
+
+        // Seleciona apenas a coluna 'disciplina' da tabela
+        return db.query(
+            TABLE_NAME,                                      // Nome da tabela
+            arrayOf(COLUMN_DISCIPLINA),                      // Colunas que queremos retornar
+            null, null,                                      // Sem cláusula WHERE
+            null, null,                                      // Sem GROUP BY ou HAVING
+            COLUMN_DISCIPLINA                                // Ordena pelo nome da disciplina
+        )
+    }
 }

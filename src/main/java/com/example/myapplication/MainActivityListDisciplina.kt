@@ -10,46 +10,64 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivityListDisciplina : AppCompatActivity() {
 
-    // Método que é executado quando a activity é criada
-    override fun onCreate(savedInstanceState: Bundle?) { // Corrigido: 'savedInstanceState'
+    // Declaração dos componentes e do banco de dados
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var listDisciplina: ListView
+    private lateinit var btnVoltar: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_disciplina) // Define o layout da tela
 
-        // Referência para o ListView onde serão exibidas as disciplinas
-        val listDisciplina = findViewById<ListView>(R.id.listDisciplina)
+        dbHelper = DatabaseHelper(this) // Inicializa o helper do banco SQLite
 
-        // Referência para o botão "Voltar"
-        val btnVoltar: Button = findViewById(R.id.btnVoltar)
+        // Liga os componentes do layout aos objetos do Kotlin
+        listDisciplina = findViewById(R.id.listDisciplina)
+        btnVoltar = findViewById(R.id.btnVoltar)
 
-        // Ação para o botão "Voltar"
+        // Configura o botão de voltar para a tela principal
         btnVoltar.setOnClickListener {
-            // Cria uma Intent para abrir a tela de listagem principal
             val intent = Intent(this, MainHome::class.java)
             startActivity(intent)
         }
 
-        // Lista de exemplo com valores fixos para exibição no ListView
-        val arrayList = arrayOf(
-            "Android",
-            "Front-End",
-            "Back-End",
-            "Banco De Dados",
-            "Arquitetura e Estrutura de Dados",
-            "Redes",
-            "I.A"
-        )
+        // Exibe a lista de disciplinas
+        displayListaDisciplinas()
+    }
 
-        // Adapter que conecta a lista de dados com o ListView
-        listDisciplina.adapter = ArrayAdapter(
-            this, // Contexto da activity
-            android.R.layout.simple_list_item_1, // Layout padrão para cada item da lista
-            arrayList // Dados a serem exibidos
-        )
+    // Função que busca e exibe disciplinas no ListView
+    private fun displayListaDisciplinas() {
+        val cursor = dbHelper.getAllDisciplinas() // Chama o novo método que retorna só disciplinas
+        val disciplinasSet = mutableSetOf<String>() // Usamos Set para evitar duplicatas
 
-        // Evento de clique em um item da lista
-        listDisciplina.setOnItemClickListener { adapterView, view, position, id ->
-            // Mostra uma mensagem com o item clicado
-            Toast.makeText(this, arrayList[position], Toast.LENGTH_SHORT).show()
+        if (cursor.moveToFirst()) {
+            do {
+                // Pega a string da disciplina do banco
+                val disciplina = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DISCIPLINA))
+
+                // Adiciona no Set, evitando repetição
+                disciplinasSet.add(disciplina)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+
+        val disciplinasList = disciplinasSet.toList()
+
+        // Se não tiver nenhuma disciplina cadastrada
+        val finalList = if (disciplinasList.isEmpty()) {
+            listOf("Nenhuma disciplina cadastrada.")
+        } else {
+            disciplinasList
+        }
+
+        // Cria o adaptador e define no ListView
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, finalList)
+        listDisciplina.adapter = adapter
+
+        // Mostra a disciplina em um Toast ao clicar
+        listDisciplina.setOnItemClickListener { _, _, position, _ ->
+            Toast.makeText(this, finalList[position], Toast.LENGTH_SHORT).show()
         }
     }
 }

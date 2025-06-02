@@ -15,6 +15,15 @@
         android:inputType="number"
         android:layout_marginBottom="8dp" />
 
+    <!-- Campo de Nome -->
+    <EditText
+        android:id="@+id/editTextNome"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Professor"
+        android:inputType="text"
+        android:layout_marginBottom="8dp" />
+
     <!-- Campo de Disciplina -->
     <EditText
         android:id="@+id/editTextDisciplina"
@@ -67,4 +76,12 @@
         android:layout_weight="1"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/buttonListar"
+        android:layout_width="0dp"
+        android:layout_height="39dp"
+        android:backgroundTint="#1976D2"
+        android:text="Ver Lista"
+        android:textColor="#FFFFFF" />
 </LinearLayout>

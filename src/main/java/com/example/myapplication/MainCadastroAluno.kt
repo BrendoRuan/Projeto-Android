@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.database.SQLException
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -9,27 +10,30 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
+// Activity responsável pelo cadastro, atualização, deleção e listagem de alunos
 class MainCadastroAluno : AppCompatActivity() {
 
-    // Declaração das variáveis que representam componentes da interface
-    private lateinit var dbHelper: DatabaseHelper
-    private lateinit var editTextId: EditText
-    private lateinit var editTextNome: EditText
-    private lateinit var editTextDisciplina: EditText
-    private lateinit var listView: ListView
-    private lateinit var buttonInsert: Button
-    private lateinit var buttonUpdate: Button
-    private lateinit var buttonDelete: Button
+    // Declaração dos componentes visuais da interface e do helper para banco de dados
+    private lateinit var dbHelper: DatabaseHelper        // Helper que gerencia o banco SQLite
+    private lateinit var editTextId: EditText            // Campo para inserir/mostrar ID
+    private lateinit var editTextNome: EditText          // Campo para inserir nome do aluno
+    private lateinit var editTextDisciplina: EditText    // Campo para inserir nome da disciplina
+    private lateinit var listView: ListView               // Lista para exibir cadastros
+    private lateinit var buttonInsert: Button             // Botão para inserir novo cadastro
+    private lateinit var buttonUpdate: Button             // Botão para atualizar cadastro existente
+    private lateinit var buttonDelete: Button             // Botão para deletar cadastro
+    private lateinit var buttonListar: Button             // Botão para abrir outra Activity de listagem
 
+    // Método chamado na criação da Activity (ponto inicial)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Define qual layout XML será usado nesta Activity
+        // Define o layout XML que será usado nesta tela
         setContentView(R.layout.activity_cadastro_aluno)
 
-        // Inicializa o objeto que acessa o banco de dados
+        // Instancia o helper do banco passando o contexto atual
         dbHelper = DatabaseHelper(this)
 
-        // Inicializa as referências para os componentes visuais no layout
+        // Liga as variáveis declaradas aos componentes visuais definidos no XML pelo ID
         editTextId = findViewById(R.id.editTextId)
         editTextNome = findViewById(R.id.editTextNome)
         editTextDisciplina = findViewById(R.id.editTextDisciplina)
@@ -37,125 +41,119 @@ class MainCadastroAluno : AppCompatActivity() {
         buttonInsert = findViewById(R.id.buttonInsert)
         buttonUpdate = findViewById(R.id.buttonUpdate)
         buttonDelete = findViewById(R.id.buttonDelete)
+        buttonListar = findViewById(R.id.buttonListar)
 
-        // Define ações para os botões: inserir, atualizar e deletar registros
+        // Configura ação do botão Inserir para chamar a função insertCadastro()
         buttonInsert.setOnClickListener { insertCadastro() }
+        // Configura ação do botão Atualizar para chamar a função updateCadastro()
         buttonUpdate.setOnClickListener { updateCadastro() }
+        // Configura ação do botão Deletar para chamar a função deleteCadastro()
         buttonDelete.setOnClickListener { deleteCadastro() }
 
-        // Exibe os dados cadastrados na lista logo ao abrir a Activity
+        // Ao abrir a Activity, já carrega e mostra a lista de cadastros
         displayCadastro()
+
+        // Configura ação do botão Listar para abrir outra Activity com a lista completa
+        buttonListar.setOnClickListener {
+            val intent = Intent(this, MainActivityListAluno::class.java)
+            startActivity(intent)
+        }
     }
 
-    // Função para inserir um novo cadastro no banco de dados
+    // Função que insere um novo cadastro no banco
     private fun insertCadastro() {
-        // Pega os valores digitados no campo nome e disciplina, removendo espaços extras
+        // Captura o texto digitado nos campos nome e disciplina, retirando espaços extras
         val nome = editTextNome.text.toString().trim()
-        val disciplina = editTextDisciplina.text.toString().trim() // Corrigido para String
+        val disciplina = editTextDisciplina.text.toString().trim()
 
-        // Valida se os campos estão preenchidos
+        // Validação: verifica se os campos obrigatórios não estão vazios
         if (nome.isEmpty() || disciplina.isEmpty()) {
-            // Exibe mensagem ao usuário se algum campo estiver vazio
+            // Exibe mensagem informando para preencher corretamente os campos
             Toast.makeText(this, "Preencha o nome e a disciplina corretamente.", Toast.LENGTH_SHORT).show()
-            return // Sai da função sem executar o restante
+            return  // Sai da função para evitar inserir dados inválidos
         }
 
         try {
-            // Chama o método do dbHelper para inserir os dados no banco
+            // Tenta inserir o cadastro usando o método do dbHelper
             dbHelper.insertCadastro(nome, disciplina)
-            // Mostra mensagem de sucesso
+            // Informa o usuário que a inserção foi bem sucedida
             Toast.makeText(this, "Cadastro inserido com sucesso!", Toast.LENGTH_SHORT).show()
             // Limpa os campos para nova inserção
             clearFields()
-            // Atualiza a lista para mostrar o novo cadastro
+            // Atualiza a lista visível para refletir o novo cadastro
             displayCadastro()
         } catch (e: SQLException) {
-            // Em caso de erro no banco, mostra a mensagem com o erro
+            // Caso ocorra um erro no banco, informa ao usuário
             Toast.makeText(this, "Erro ao inserir cadastro: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
-    // Função para atualizar um cadastro existente
+    // Função para atualizar um cadastro já existente
     private fun updateCadastro() {
-        // Pega o ID digitado, tenta converter para Int. Se não for número válido, retorna null
+        // Captura o ID digitado e tenta converter para inteiro (null se inválido)
         val id = editTextId.text.toString().toIntOrNull()
-        // Pega os valores digitados nos campos nome e disciplina
         val nome = editTextNome.text.toString().trim()
-        val disciplina = editTextDisciplina.text.toString().trim() // Corrigido para String
+        val disciplina = editTextDisciplina.text.toString().trim()
 
-        // Verifica se algum dado obrigatório está faltando
+        // Validação dos dados para atualização (todos campos obrigatórios)
         if (id == null || nome.isEmpty() || disciplina.isEmpty()) {
-            // Mostra aviso para o usuário preencher os campos corretamente
             Toast.makeText(this, "Preencha o ID, nome e disciplina corretamente.", Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
-            // Tenta atualizar o cadastro no banco e recebe quantas linhas foram afetadas
+            // Tenta atualizar o cadastro no banco e recebe quantas linhas foram modificadas
             val rowsAffected = dbHelper.updateCadastro(id, nome, disciplina)
             if (rowsAffected > 0) {
-                // Se alguma linha foi atualizada, mostra sucesso
                 Toast.makeText(this, "Cadastro atualizado com sucesso!", Toast.LENGTH_SHORT).show()
-                // Limpa campos após atualização
                 clearFields()
-                // Atualiza a lista com os dados novos
                 displayCadastro()
             } else {
-                // Se nenhuma linha foi alterada, provavelmente o ID não existe
+                // Caso não tenha atualizado nenhuma linha (ID não encontrado)
                 Toast.makeText(this, "Cadastro com ID $id não encontrado.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: SQLException) {
-            // Em caso de erro na atualização, mostra o erro
             Toast.makeText(this, "Erro ao atualizar cadastro: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
-    // Função para deletar um cadastro pelo ID
+    // Função para deletar cadastro pelo ID
     private fun deleteCadastro() {
-        // Pega o ID digitado e tenta converter para inteiro
         val id = editTextId.text.toString().toIntOrNull()
 
         if (id == null) {
-            // Se ID inválido, mostra mensagem e sai da função
             Toast.makeText(this, "Preencha o ID corretamente.", Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
-            // Tenta deletar cadastro, retorna quantas linhas foram deletadas
             val rowsAffected = dbHelper.deleteCadastro(id)
             if (rowsAffected > 0) {
-                // Sucesso na deleção
                 Toast.makeText(this, "Cadastro deletado com sucesso!", Toast.LENGTH_SHORT).show()
-                // Limpa campos após deleção
                 clearFields()
-                // Atualiza lista para refletir exclusão
                 displayCadastro()
             } else {
-                // Caso ID não encontrado para deleção
                 Toast.makeText(this, "Cadastro com ID $id não encontrado.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: SQLException) {
-            // Em caso de erro na deleção, exibe mensagem
             Toast.makeText(this, "Erro ao deletar o cadastro: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
-    // Função para exibir todos os cadastros na ListView
+    // Função que busca todos os cadastros no banco e exibe na ListView
     private fun displayCadastro() {
-        // Obtem um cursor com todos os registros do banco
+        // Obtém um cursor com todos os registros
         val cursor = dbHelper.getAllCadastro()
-        // Lista que vai armazenar as strings para mostrar na ListView
         val cadastros = mutableListOf<String>()
 
-        // Move para o primeiro registro e percorre todos, se existirem
+        // Percorre todos os registros retornados pelo cursor
         if (cursor.moveToFirst()) {
             do {
-                // Extrai os dados das colunas pelo nome
+                // Extrai os dados das colunas pelo nome da coluna
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID))
                 val nome = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NAME))
                 val disciplina = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DISCIPLINA))
-                // Monta a string para exibir na lista
+                // Formata a string para mostrar na lista
                 cadastros.add("ID: $id - Nome: $nome - Disciplina: $disciplina")
             } while (cursor.moveToNext())
         }
@@ -163,21 +161,22 @@ class MainCadastroAluno : AppCompatActivity() {
         // Fecha o cursor para liberar recursos
         cursor.close()
 
-        // Se não houver nenhum cadastro, adiciona mensagem padrão
+        // Caso não exista nenhum cadastro, mostra uma mensagem padrão
         if (cadastros.isEmpty()) {
             cadastros.add("Nenhum cadastro encontrado.")
         }
 
-        // Cria o adapter para a ListView usando um layout padrão do Android e a lista de strings
+        // Cria um ArrayAdapter para popular a ListView com as strings formatadas
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, cadastros)
-        // Aplica o adapter na ListView para mostrar os dados
+        // Aplica o adapter à ListView
         listView.adapter = adapter
     }
 
-    // Função para limpar os campos de texto do formulário
+    // Função para limpar os campos do formulário, deixando prontos para novo cadastro
     private fun clearFields() {
         editTextId.text.clear()
         editTextNome.text.clear()
         editTextDisciplina.text.clear()
     }
+
 }

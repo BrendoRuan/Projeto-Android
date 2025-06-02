@@ -54,9 +54,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="#1976D2"
             android:text="Atualizar"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1976D2" />
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/buttonDelete"
@@ -76,4 +76,12 @@
         android:layout_weight="1"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/buttonListar"
+        android:layout_width="131dp"
+        android:layout_height="39dp"
+        android:backgroundTint="#1976D2"
+        android:text="Ver Lista"
+        android:textColor="#FFFFFF" />
 </LinearLayout>
